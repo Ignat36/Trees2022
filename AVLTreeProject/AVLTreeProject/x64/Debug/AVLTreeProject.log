@@ -1,7 +1,7 @@
 ﻿  AVL.cpp
-C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVL.cpp(55,31): warning C4244: аргумент: преобразование "AVL::ll" в "int", возможна потеря данных
-C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVL.cpp(63,35): warning C4244: аргумент: преобразование "AVL::ll" в "int", возможна потеря данных
-C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVL.cpp(277,21): warning C4244: аргумент: преобразование "AVL::ll" в "int", возможна потеря данных
+C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVL.cpp(141,31): warning C4244: аргумент: преобразование "AVL::ll" в "int", возможна потеря данных
+C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVL.cpp(149,35): warning C4244: аргумент: преобразование "AVL::ll" в "int", возможна потеря данных
+C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVL.cpp(363,21): warning C4244: аргумент: преобразование "AVL::ll" в "int", возможна потеря данных
   AVLTreeProject.cpp
 C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVLTreeProject.cpp(20,35): warning C4474: "scanf_s" : для строки формата передано слишком много аргументов
 C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVLTreeProject.cpp(20,35): message : заполнители и их параметры ожидают переменное число аргументов в количестве 1, но было предоставлено 2
@@ -9,9 +9,7 @@ C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVLTreeProject.cpp(29,21)
 C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVLTreeProject.cpp(29,21): message : этот аргумент используется в качестве размера буфера
 C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVLTreeProject.cpp(33,42): warning C4474: "scanf_s" : для строки формата передано слишком много аргументов
 C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVLTreeProject.cpp(33,42): message : заполнители и их параметры ожидают переменное число аргументов в количестве 1, но было предоставлено 2
-C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVLTreeProject.cpp(35,22): error C2679: бинарный "[": не найден оператор, принимающий правый операнд типа "std::string" (или приемлемое преобразование отсутствует)
-C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVL.h(17,10): message : может быть "AVL::str &AVL::operator [](AVL::ll)"
-C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVLTreeProject.cpp(35,22): message : при попытке сопоставить список аргументов "(AVL, std::string)"
 C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVLTreeProject.cpp(41,42): warning C4474: "scanf_s" : для строки формата передано слишком много аргументов
 C:\5sem\Первашам\AVLTreeProject\AVLTreeProject\AVLTreeProject.cpp(41,42): message : заполнители и их параметры ожидают переменное число аргументов в количестве 1, но было предоставлено 2
   Создание кода...
+  AVLTreeProject.vcxproj -> C:\5sem\Первашам\AVLTreeProject\x64\Debug\AVLTreeProject.exe

@@ -32,7 +32,7 @@ int main()
             printf_s("%s", "Enter phone number : ");
             scanf_s("%d", &phone_number, 1);
 
-            dict[name] = phone_number;
+            dict[phone_number] = name;
 
             break;
 

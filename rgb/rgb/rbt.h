@@ -179,14 +179,18 @@ T1& RBT<T, T1>::operator[](T key)
 
         tmp->InsCase1(root);
 
+        
         ///////////////////////////////////////
+        if (root) root->parent = _end;
         Node* nx = tmp->next();
         Node* pr = tmp->prev();
 
 
-        tmp->listPrev = pr;
-        tmp->listNext = nx;
+        tmp->listPrev = pr; pr->listNext = tmp;
+        tmp->listNext = nx; nx->listPrev = tmp;
+        if (root) root->parent = nullptr;
         ///////////////////////////////////////
+        
     }
 
     if (root) root->parent = _end;
@@ -230,12 +234,14 @@ void RBT<T, T1>::add(T key, T1 value)
     tmp->InsCase1(root);
 
     ////////////////////////////////////////
+    if (root) root->parent = _end;
     Node* nx = tmp->next();
     Node* pr = tmp->prev();
 
 
-    tmp->listPrev = pr;
-    tmp->listNext = nx;
+    tmp->listPrev = pr; pr->listNext = tmp;
+    tmp->listNext = nx; nx->listPrev = tmp;
+    if (root) root->parent = nullptr;
     ///////////////////////////////////////
 
     if (root) root->parent = _end;
@@ -314,12 +320,14 @@ void RBT<T, T1>::remove(T key)
         }
     }
     ////////////////////////////////////
+    if (root) root->parent = _end;
     Node* nx = tmp->next();
     Node* pr = tmp->prev();
 
 
-    pr->listNext = nx;
-    nx->listPrev = pr;
+    tmp->listPrev = pr; pr->listNext = tmp;
+    tmp->listNext = nx; nx->listPrev = tmp;
+    if (root) root->parent = nullptr;
     /////////////////////////////////////
     delete tmp;
 

@@ -129,10 +129,10 @@
   <ItemGroup>
     <ClCompile Include="AVL.cpp" />
     <ClCompile Include="AVLTreeProject.cpp" />
-    <ClCompile Include="smart_ptr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AVL.h" />
+    <ClInclude Include="shared_ptr.h" />
     <ClInclude Include="smart_ptr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

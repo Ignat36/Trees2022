@@ -127,9 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="rbt.cpp" />
     <ClCompile Include="rgb.cpp" />
-    <ClCompile Include="set.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rbt.h" />

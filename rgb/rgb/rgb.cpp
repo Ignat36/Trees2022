@@ -16,6 +16,14 @@ void print_dict()
     printf("\n");
 }
 
+void print_dict_l()
+{
+    for (auto i = dict.begin_l(); i != dict.end_l(); ++i)
+        printf_s("%s ", (*i).c_str());
+
+    printf("\n");
+}
+
 int main()
 {
     for (int i = 0; i < 10000; i++) {
@@ -61,6 +69,10 @@ int main()
 
         case 3:
             print_dict();
+            break;
+
+        case 4:
+            print_dict_l();
             break;
 
         default:
