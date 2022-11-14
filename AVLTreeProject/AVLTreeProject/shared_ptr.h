@@ -27,26 +27,20 @@ public:
 	}
 
 	//  онструктор перемещени€, который передает право собственности на x.m_ptr в m_ptr
-	shared_ptr(shared_ptr&& x)
+	shared_ptr(shared_ptr& x)
 		: m_ptr(x.m_ptr), m_references_count(x.m_references_count)
 	{
 		(* m_references_count)++;
 	}
 	
-	shared_ptr(weak_ptr&& x)
+	shared_ptr(weak_ptr& x)
 		: m_ptr(x.m_ptr), m_references_count(x.m_references_count)
 	{
 		(* m_references_count)++;
 	}
 
-	shared_ptr(const shared_ptr& x) = delete;
-
-	// ќператор присваивани€, который реализовывает семантику перемещени€
-	shared_ptr& operator=(shared_ptr& a) = delete;
-
-
 	// ќператор присваивани€ перемещением, который передает право собственности на x.m_ptr в m_ptr
-	shared_ptr& operator=(shared_ptr&& x)
+	shared_ptr& operator=(shared_ptr& x)
 	{
 		// ѕроверка на самоприсваивание
 		if (&x == this)
@@ -56,6 +50,47 @@ public:
 		m_ptr = x.m_ptr;
 		m_references_count = x.m_references_count;
 		(*m_references_count)++; // увеличиваем количество ссылок
+
+		return *this;
+	}
+
+	shared_ptr& operator=(weak_ptr& x)
+	{
+		// ѕроверка на самоприсваивание
+		if (&x == this)
+			return *this;
+
+		// ѕередаем право собственности на x.m_ptr в m_ptr
+		m_ptr = x.m_ptr;
+		m_references_count = x.m_references_count;
+		(*m_references_count)++; // увеличиваем количество ссылок
+
+		return *this;
+	}
+
+	shared_ptr(shared_ptr&& x)
+		: m_ptr(x.m_ptr), m_references_count(x.m_references_count)
+	{
+		x.m_ptr = nullptr; // мы поговорим об этом чуть позже
+		x.m_references_count = nullptr;
+	}
+
+	// ќператор присваивани€ перемещением, который передает право собственности на x.m_ptr в m_ptr
+	shared_ptr& operator=(shared_ptr&& x)
+	{
+		// ѕроверка на самоприсваивание
+		if (&x == this)
+			return *this;
+
+		// ”дал€ем всЄ, что к этому моменту может хранить указатель 
+		delete m_ptr;
+		delete m_references_count;
+
+		// ѕередаем право собственности на x.m_ptr в m_ptr
+		m_ptr = x.m_ptr;
+		m_references_count = x.m_references_count;
+		x.m_ptr = nullptr; // мы поговорим об этом чуть позже
+		x.m_references_count = nullptr;
 
 		return *this;
 	}
@@ -77,24 +112,18 @@ public:
 	}
 
 	//  онструктор перемещени€, который передает право собственности на x.m_ptr в m_ptr
-	weak_ptr(weak_ptr&& x)
+	weak_ptr(weak_ptr& x)
 		: m_ptr(x.m_ptr), m_references_count(x.m_references_count)
 	{
 	}
 
-	weak_ptr(shared_ptr&& x)
+	weak_ptr(shared_ptr& x)
 		: m_ptr(x.m_ptr), m_references_count(x.m_references_count)
 	{
 	}
-
-	weak_ptr(const weak_ptr& x) = delete;
-
-	// ќператор присваивани€, который реализовывает семантику перемещени€
-	weak_ptr& operator=(weak_ptr& a) = delete;
-
 
 	// ќператор присваивани€ перемещением, который передает право собственности на x.m_ptr в m_ptr
-	weak_ptr& operator=(weak_ptr&& x)
+	weak_ptr& operator=(weak_ptr& x)
 	{
 		// ѕроверка на самоприсваивание
 		if (&x == this)
@@ -107,7 +136,7 @@ public:
 		return *this;
 	}
 
-	weak_ptr& operator=(shared_ptr&& x)
+	weak_ptr& operator=(shared_ptr& x)
 	{
 		// ѕроверка на самоприсваивание
 		if (&x == this)

@@ -26,7 +26,7 @@
     <ClInclude Include="AVL.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="smart_ptr.h">
+    <ClInclude Include="unique_ptr.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="shared_ptr.h">
