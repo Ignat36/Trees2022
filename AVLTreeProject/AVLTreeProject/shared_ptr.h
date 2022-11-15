@@ -9,21 +9,27 @@ class shared_ptr
 	T* m_ptr;
 	int* m_references_count;
 
+private:
+	void m_delete()
+	{
+		(*m_references_count)--;
+		if (!(*m_references_count))
+		{
+			delete m_ptr;
+			delete m_references_count;
+		}
+	}
+
 public:
 	shared_ptr(T* ptr = nullptr)
-		:m_ptr(ptr), m_references_count(&1)
+		:m_ptr(ptr), m_references_count(new int(1))
 	{
 	}
 
 	// Деструктор позаботится об удалении указателя
 	~shared_ptr()
 	{
-		m_references_count--;
-		if (!( * m_references_count))
-		{
-			delete m_ptr;
-			delete m_references_count;
-		}
+		m_delete();
 	}
 
 	// Конструктор перемещения, который передает право собственности на x.m_ptr в m_ptr
@@ -46,6 +52,8 @@ public:
 		if (&x == this)
 			return *this;
 
+		m_delete();
+
 		// Передаем право собственности на x.m_ptr в m_ptr
 		m_ptr = x.m_ptr;
 		m_references_count = x.m_references_count;
@@ -60,6 +68,8 @@ public:
 		if (&x == this)
 			return *this;
 
+		m_delete();
+
 		// Передаем право собственности на x.m_ptr в m_ptr
 		m_ptr = x.m_ptr;
 		m_references_count = x.m_references_count;
@@ -71,7 +81,7 @@ public:
 	shared_ptr(shared_ptr&& x)
 		: m_ptr(x.m_ptr), m_references_count(x.m_references_count)
 	{
-		x.m_ptr = nullptr; // мы поговорим об этом чуть позже
+		x.m_ptr = nullptr; 
 		x.m_references_count = nullptr;
 	}
 
@@ -83,8 +93,7 @@ public:
 			return *this;
 
 		// Удаляем всё, что к этому моменту может хранить указатель 
-		delete m_ptr;
-		delete m_references_count;
+		m_delete();
 
 		// Передаем право собственности на x.m_ptr в m_ptr
 		m_ptr = x.m_ptr;
