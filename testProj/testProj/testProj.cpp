@@ -1,4 +1,6 @@
 ﻿#include <iostream>
+#include <string>
+#include <map>
 
 #include "unique_ptr.h"
 #include "shared_ptr.h"
@@ -6,48 +8,128 @@
 #include "AVL.h"
 #include "rbt.h"
 
-class Human
+std::map<int, std::string> map;
+
+void fill(AVL &a, int n = 1000000, int mod = 1e9 + 7)
 {
-	std::string m_name;
-	weak_ptr<Human> m_partner; // изначально пустой
-
-public:
-
-	Human(const std::string& name) : m_name(name)
-	{
-		std::cout << m_name << " created\n";
+	map.clear();
+	srand(time(NULL));
+	for (int i = 0; i < n; i++) {
+		int ran = rand() * rand() % mod;
+		a[ran] = std::to_string(ran);
+		map[ran] = std::to_string(ran);
 	}
-	~Human()
-	{
-		std::cout << m_name << " destroyed\n";
+}
+
+void fill(RBT<int, std::string> &a, int n = 1000000, int mod = 1e5 + 7)
+{
+	map.clear();
+	srand(time(NULL));
+	for (int i = 0; i < n; i++) {
+		int ran = rand() * rand() % mod;
+		a[ran] = std::to_string(ran);
+		map[ran] = std::to_string(ran);
 	}
+}
 
-	friend bool partnerUp(shared_ptr<Human>& h1, shared_ptr<Human>& h2)
+void testAVl(int tests_count = 10000000)
+{
+	AVL avl; fill(avl, 10000000);
+
+	for (int i = 0; i < tests_count; i++)
 	{
-		if (!h1 || !h2)
-			return false;
+		int id = rand() % 3;
+		int ran = rand() * rand() % (int)(1e9 + 7);
 
-		h1->m_partner = h2;
-		h2->m_partner = h1;
 
-		std::cout << h1->m_name << " is now partnered with " << h2->m_name << "\n";
+		if (id == 0) // insert
+		{
+			avl[ran] = std::to_string(ran);
+			map[ran] = std::to_string(ran);
+		}
 
-		return true;
+		if (id == 1) // delete
+		{
+			map.erase(ran);
+			avl.remove(ran);
+		}
+
+		if (id == 2) // find
+		{
+			if (map.count(ran) != avl.contains(ran))
+			{
+				std::cout << "Mismatch ( " << ran << ") : map(" << map.count(ran) << ") avl(" << avl.contains(ran) << ") \n";
+				return;
+			}
+		}
 	}
+	std::cout << "AVL tests complited\n";
+}
 
-	shared_ptr<Human> getPartner() { return m_partner.lock(); } // используем метод lock() для конвертации std::weak_ptr в std::shared_ptr
-	const std::string& getName() const { return m_name; }
-};
+void testRBT(int tests_count = 1000000)
+{
+	RBT<int, std::string> rbt; fill(rbt);
+	
+	for (int i = 0; i < tests_count; i++)
+	{
+		int id = rand() % 3;
+		int ran = rand() * rand() % (int)(1e5 + 7);
+
+		if (id == 0) // insert
+		{
+			rbt[ran] = std::to_string(ran);
+			map[ran] = std::to_string(ran);
+		}
+
+		if (id == 1) // delete
+		{
+			if (map.count(ran))
+			{
+				map.erase(ran);
+				rbt.remove(ran);
+				std::cout << "Test : " << i << ". Action : " << id << "\n";
+			}
+		}
+
+		if (id == 2) // find
+		{
+			if (map.count(ran) != rbt.contains(ran))
+			{
+				std::cout << "Mismatch ( " << ran << ") : map(" << map.count(ran) << ") rbt(" << rbt.contains(ran) << ") \n";
+				return;
+			}
+		}
+	}
+	std::cout << "RBT tests complited\n";
+}
+
 
 int main()
 {
-	auto anton = shared_ptr<Human>(new Human("Anton")); // создание умного указателя с объектом Anton класса Human
-	auto ivan = shared_ptr<Human>(new Human("Ivan")); // создание умного указателя с объектом Ivan класса Human
+	AVL avl;
+	RBT<int, std::string> rbt;
+	fill(avl, 50, 20); 
 
-	partnerUp(anton, ivan); // Anton указывает на Ivan-а, а Ivan указывает на Anton-а
+	avl.directPrint(); std::cout << "\n";
+	avl.reversePrint(); std::cout << "\n";
+	avl.keySortedPrint(); std::cout << "\n";
+	
+	// complited final
+	//testAVl(); 
+	
+	//testRBT();
 
-	auto partner = ivan->getPartner(); // передаем partner-у содержимое умного указателя, которым владеет ivan
-	std::cout << ivan->getName() << "'s partner is: " << partner->getName() << '\n';
+	rbt[1] = "1";
+	rbt[3] = "3";
+	rbt[2] = "2";
+	rbt[5] = "5";
+	rbt[4] = "4";
+
+	rbt.remove(1);
+	rbt.remove(3);
+	rbt.remove(5);
+	rbt.remove(4);
+	rbt.remove(2);
 
 	return 0;
 }

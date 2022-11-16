@@ -11,6 +11,7 @@ public:
     void add(T key, T1 value);
     void remove(T key);
     T1 findValueWithKey(T key);
+    bool contains(T key);
     T1& operator[](T key);
     void clear();
 
@@ -356,6 +357,12 @@ T1 RBT<T, T1>::findValueWithKey(T key)
 }
 
 template<class T, class T1>
+bool RBT<T, T1>::contains(T key)
+{
+    return root != nullptr && root->find(key) != nullptr;
+}
+
+template<class T, class T1>
 RBT<T, T1>::Node::Node(T nKey, T1 nValue)
 {
     left = right = parent = nullptr;
@@ -617,6 +624,9 @@ template<class T, class T1>
 void RBT<T, T1>::Node::DelCase3(Node*& root)
 {
     Node* s = sibling();
+
+   /* bool lcol = s->left ? s->left->color : 1;
+    bool rcol = s->left ? s->left->color : 1;*/
 
     if (parent->color && s->color && s->left->color && s->right->color)
     {

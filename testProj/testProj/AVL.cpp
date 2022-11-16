@@ -157,6 +157,11 @@ std::string AVL::findValueWithKey(ll key)
     return root->find(root, key)->data;
 }
 
+bool AVL::contains(ll key)
+{
+    return root != nullptr && root->find(root, key) != nullptr;
+}
+
 AVL::Node::Node(ll nKey, str nValue)
 {
     left = right = nullptr;
@@ -412,10 +417,13 @@ AVL::Node* AVL::Node::deleteNode(Node* root, int key)
 
 AVL::Node* AVL::Node::find(Node *node, ll key)
 {
+    if (!node)
+        return nullptr;
+
     if (node->key > key)
         return find(node->left, key);
     else if (node->key < key)
         return find(node->right, key);
     else
-        return nullptr;
+        return node;
 }

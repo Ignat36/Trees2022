@@ -4,7 +4,6 @@
 
 class AVL
 {
-
     typedef long long ll;
     typedef std::string str;
 
@@ -14,6 +13,7 @@ public:
     void add(ll key, str value);
     void remove(ll key);
     str findValueWithKey(ll key);
+    bool contains(ll key);
     str& operator[](ll key);
     void clear();
     void directPrint();
