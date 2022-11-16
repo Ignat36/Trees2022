@@ -143,8 +143,8 @@ void RBT<T, T1>::clear()
 template<class T, class T1>
 RBT<T, T1>::~RBT()
 {
-    clear();
-    delete _end;
+    //clear();
+    //delete _end;
 }
 
 template<class T, class T1>
@@ -606,7 +606,9 @@ void RBT<T, T1>::Node::DelCase2(Node*& root)
 {
     Node* s = sibling();
 
-    if (!s->color)
+    bool scol = s ? s->color : 1;
+
+    if (!scol)
     {
         parent->color = 0;
         s->color = 1;
@@ -625,13 +627,14 @@ void RBT<T, T1>::Node::DelCase3(Node*& root)
 {
     Node* s = sibling();
 
-   /* bool lcol = s->left ? s->left->color : 1;
-    bool rcol = s->left ? s->left->color : 1;*/
+    bool scol = s ? s->color : 1;
+    bool lcol = s && s->left ? s->left->color : 1;
+    bool rcol = s && s->left ? s->left->color : 1;
 
-    if (parent->color && s->color && s->left->color && s->right->color)
+    if (parent->color && scol && lcol && rcol)
     {
-        s->color = 0;
-        s->DelCase1(root);
+        if (s) s->color = 0;
+        parent->DelCase1(root);
     }
     else
         this->DelCase4(root);
@@ -642,9 +645,13 @@ void RBT<T, T1>::Node::DelCase4(Node*& root)
 {
     Node* s = sibling();
 
-    if (!parent->color && s->color && s->left->color && s->right->color)
+    bool scol = s ? s->color : 1;
+    bool lcol = s && s->left ? s->left->color : 1;
+    bool rcol = s && s->left ? s->left->color : 1;
+
+    if (!parent->color && scol && lcol && rcol)
     {
-        s->color = 0;
+        if (s) s->color = 0;
         parent->color = 1;
     }
     else
@@ -656,19 +663,22 @@ void RBT<T, T1>::Node::DelCase5(Node*& root)
 {
     Node* s = sibling();
 
+    bool lcol = s->left ? s->left->color : 1;
+    bool rcol = s->left ? s->left->color : 1;
+
     if (s->color)
     {
         if (this == parent->left &&
-            s->right->color &&
-            !s->left->color)
+            rcol &&
+            !lcol)
         {
             s->color = 0;
             s->left->color = 1;
             s->RotateRight(root);
         }
         else if (this == parent->right &&
-            s->left->color &&
-            !s->right->color)
+           lcol &&
+            !rcol)
         {
             s->color = 0;
             s->right->color = 1;
@@ -688,12 +698,12 @@ void RBT<T, T1>::Node::DelCase6(Node*& root)
 
     if (this == parent->left)
     {
-        s->right->color = 1;
+        if (s->right) s->right->color = 1;
         parent->RotateLeft(root);
     }
     else
     {
-        s->left->color = 1;
+        if (s->left) s->left->color = 1;
         parent->RotateRight(root);
     }
 }

@@ -66,10 +66,13 @@ void testAVl(int tests_count = 10000000)
 	std::cout << "AVL tests complited\n";
 }
 
-void testRBT(int tests_count = 1000000)
+void testRBT(int tests_count = 100000000)
 {
-	RBT<int, std::string> rbt; fill(rbt);
 	
+	RBT<int, std::string> rbt; fill(rbt, 10000000);
+	
+	std::cout << "Testing started\n";
+
 	for (int i = 0; i < tests_count; i++)
 	{
 		int id = rand() % 3;
@@ -87,7 +90,7 @@ void testRBT(int tests_count = 1000000)
 			{
 				map.erase(ran);
 				rbt.remove(ran);
-				std::cout << "Test : " << i << ". Action : " << id << "\n";
+				//std::cout << "Test : " << i << ". Action : " << id << "\n";
 			}
 		}
 
@@ -117,19 +120,18 @@ int main()
 	// complited final
 	//testAVl(); 
 	
-	//testRBT();
+	testRBT();
+	//rbt[2] = "2";
+	//rbt[1] = "1";
+	//rbt[4] = "4";
+	//rbt[3] = "3";
+	//
 
-	rbt[1] = "1";
-	rbt[3] = "3";
-	rbt[2] = "2";
-	rbt[5] = "5";
-	rbt[4] = "4";
-
-	rbt.remove(1);
-	rbt.remove(3);
-	rbt.remove(5);
-	rbt.remove(4);
-	rbt.remove(2);
+	//rbt.remove(1);
+	//rbt.remove(3);
+	//rbt.remove(5);
+	//rbt.remove(4);
+	//rbt.remove(2);
 
 	return 0;
 }
