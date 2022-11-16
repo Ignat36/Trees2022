@@ -134,6 +134,7 @@
     <ClInclude Include="AVL.h" />
     <ClInclude Include="shared_ptr.h" />
     <ClInclude Include="unique_ptr.h" />
+    <ClInclude Include="weak_ptr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
