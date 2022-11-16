@@ -6,6 +6,12 @@ class unique_ptr
 	T* m_ptr;
 
 public:
+
+	operator bool() const
+	{
+		return m_ptr != nullptr;
+	}
+
 	unique_ptr(T* ptr = nullptr)
 		:m_ptr(ptr)
 	{

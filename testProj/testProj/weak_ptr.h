@@ -9,13 +9,27 @@ class weak_ptr
 	T* m_ptr;
 	int* m_references_count;
 
+	friend class shared_ptr<T>;
+
 public:
+
+	operator bool() const
+	{
+		return m_ptr != nullptr;
+	}
+
 	// ƒеструктор позаботитс€ об удалении указател€
 	~weak_ptr()
 	{
 	}
 
 	//  онструктор перемещени€, который передает право собственности на x.m_ptr в m_ptr
+
+	weak_ptr()
+		: m_ptr(nullptr), m_references_count(nullptr)
+	{
+	}
+
 	weak_ptr(weak_ptr& x)
 		: m_ptr(x.m_ptr), m_references_count(x.m_references_count)
 	{
@@ -35,26 +49,23 @@ public:
 
 		// ѕередаем право собственности на x.m_ptr в m_ptr
 		m_ptr = x.m_ptr;
-		m_references_count = x.m_references_count
+		m_references_count = x.m_references_count;
 
-			return *this;
+		return *this;
 	}
 
 	weak_ptr& operator=(shared_ptr<T>& x)
 	{
-		// ѕроверка на самоприсваивание
-		if (&x == this)
-			return *this;
 
 		// ѕередаем право собственности на x.m_ptr в m_ptr
 		m_ptr = x.m_ptr;
-		m_references_count = x.m_references_count
+		m_references_count = x.m_references_count;
 
-			return *this;
+		return *this;
 	}
 
 	shared_ptr<T> lock()
 	{
-		return shared_ptr<T>(*this)
+		return shared_ptr<T>(*this);
 	}
 };

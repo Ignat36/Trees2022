@@ -131,10 +131,10 @@
     <ClCompile Include="AVLTreeProject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\testProj\testProj\shared_ptr.h" />
+    <ClInclude Include="..\..\testProj\testProj\unique_ptr.h" />
+    <ClInclude Include="..\..\testProj\testProj\weak_ptr.h" />
     <ClInclude Include="AVL.h" />
-    <ClInclude Include="shared_ptr.h" />
-    <ClInclude Include="unique_ptr.h" />
-    <ClInclude Include="weak_ptr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
