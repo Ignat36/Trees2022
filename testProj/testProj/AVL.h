@@ -1,5 +1,8 @@
 #pragma once
 
+#include "shared_ptr.h"
+#include "weak_ptr.h"
+
 #include <string>
 
 class AVL

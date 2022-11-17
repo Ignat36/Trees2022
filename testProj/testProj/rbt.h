@@ -1,4 +1,8 @@
 #pragma once
+
+#include "shared_ptr.h"
+#include "weak_ptr.h"
+
 #include <string>
 #include <vector>
 
@@ -22,46 +26,49 @@ protected:
     public:
         Node(T nKey, T1 nValue);
         Node();
-        Node* left, * right, * parent;
-        Node* listNext, * listPrev;
+        shared_ptr<Node> left, right;
+        weak_ptr<Node> parent;
+        weak_ptr<Node> listNext, listPrev;
         bool color;
         T key;
         T1 data;
 
-        Node* grandparent();
-        Node* uncle();
-        Node* sibling();
+        weak_ptr<Node> grandparent();
+        weak_ptr<Node> uncle();
+        weak_ptr<Node> sibling();
 
-        void RotateLeft(Node*& root);
-        void RotateRight(Node*& root);
+        void RotateLeft(shared_ptr<Node>& root);
+        void RotateRight(shared_ptr<Node>& root);
 
-        void InsCase1(Node*& root);
-        void InsCase2(Node*& root);
-        void InsCase3(Node*& root);
-        void InsCase4(Node*& root);
-        void InsCase5(Node*& root);
+        void InsCase1(shared_ptr<Node>& root);
+        void InsCase2(shared_ptr<Node>& root);
+        void InsCase3(shared_ptr<Node>& root);
+        void InsCase4(shared_ptr<Node>& root);
+        void InsCase5(shared_ptr<Node>& root);
 
-        void DelCase1(Node*& root);
-        void DelCase2(Node*& root);
-        void DelCase3(Node*& root);
-        void DelCase4(Node*& root);
-        void DelCase5(Node*& root);
-        void DelCase6(Node*& root);
+        void DelCase1(shared_ptr<Node>& root);
+        void DelCase2(shared_ptr<Node>& root);
+        void DelCase3(shared_ptr<Node>& root);
+        void DelCase4(shared_ptr<Node>& root);
+        void DelCase5(shared_ptr<Node>& root);
+        void DelCase6(shared_ptr<Node>& root);
 
-        Node* find(T key);
-        Node* next();
-        Node* prev();
+        weak_ptr<Node> find(T key);
+        weak_ptr<Node> next();
+        weak_ptr<Node> prev();
 
-        Node* min();
-        Node* max();
+        weak_ptr<Node> min();
+        weak_ptr<Node> max();
 
-    } *root, *_end;
+    };
+
+    shared_ptr<Node> root, _end;
 
 public:
     class iterator
     {
     public:
-        iterator(Node* node, RBT<T, T1>* own);
+        iterator(weak_ptr<Node> node, weak_ptr<RBT<T, T1> > own);
         iterator(const iterator& it);
         bool operator!=(iterator const& other) const;
         bool operator==(iterator const& other) const;
@@ -70,8 +77,8 @@ public:
         iterator& operator--();
 
     private:
-        Node* iter;
-        RBT<T, T1>* owner;
+        weak_ptr<Node> iter;
+        weak_ptr<RBT<T, T1> > owner;
     };
 
     iterator begin()
@@ -87,7 +94,7 @@ public:
     class iterator_l
     {
     public:
-        iterator_l(Node* node, RBT<T, T1>* own);
+        iterator_l(weak_ptr<Node> node, weak_ptr<RBT<T, T1> > own);
         iterator_l(const iterator_l& it);
         bool operator!=(iterator_l const& other) const;
         bool operator==(iterator_l const& other) const;
@@ -96,8 +103,8 @@ public:
         iterator_l& operator--();
 
     private:
-        Node* iter;
-        RBT<T, T1>* owner;
+        weak_ptr<Node> iter;
+        weak_ptr<RBT<T, T1> > owner;
     };
 
     iterator_l begin_l()
@@ -113,45 +120,26 @@ public:
 
 template<class T, class T1>
 RBT<T, T1>::RBT()
-{
-    root = nullptr;
-    _end = new Node();
+{;
+    _end = shared_ptr<Node>(new Node());
 }
 
 template<class T, class T1>
 void RBT<T, T1>::clear()
 {
-    std::vector< Node* > stack;
-
-    stack.push_back(root);
-
-    while (!stack.empty())
-    {
-        Node* tmp = stack.back();
-        stack.pop_back();
-
-        if (!tmp) continue;
-        stack.push_back(tmp->left);
-        stack.push_back(tmp->right);
-
-        delete tmp;
-    }
-
-    root = nullptr;
+    root = shared_ptr<Node>();
 }
 
 template<class T, class T1>
 RBT<T, T1>::~RBT()
 {
-    //clear();
-    //delete _end;
 }
 
 template<class T, class T1>
 T1& RBT<T, T1>::operator[](T key)
 {
-    if (root) root->parent = nullptr;
-    Node* tmp = root, * p = nullptr;
+    if (root) root->parent = weak_ptr<Node>();
+    shared_ptr<Node> tmp = root, p = shared_ptr<Node>();
 
     while (tmp && tmp->key != key)
     {
@@ -164,7 +152,7 @@ T1& RBT<T, T1>::operator[](T key)
 
     if (!tmp)
     {
-        tmp = new Node();
+        tmp = shared_ptr<Node>(new Node());
         tmp->key = key;
         tmp->parent = p;
 
@@ -183,13 +171,13 @@ T1& RBT<T, T1>::operator[](T key)
         
         ///////////////////////////////////////
         if (root) root->parent = _end;
-        Node* nx = tmp->next();
-        Node* pr = tmp->prev();
+        shared_ptr<Node> nx = tmp->next().lock();
+        shared_ptr<Node> pr = tmp->prev().lock();
 
 
         tmp->listPrev = pr; pr->listNext = tmp;
         tmp->listNext = nx; nx->listPrev = tmp;
-        if (root) root->parent = nullptr;
+        if (root) root->parent = weak_ptr<Node>();
         ///////////////////////////////////////
         
     }
@@ -201,8 +189,8 @@ T1& RBT<T, T1>::operator[](T key)
 template<class T, class T1>
 void RBT<T, T1>::add(T key, T1 value)
 {
-    if (root) root->parent = nullptr;
-    Node* tmp = root, * p = nullptr;
+    if (root) root->parent = weak_ptr<Node>();
+    shared_ptr<Node> tmp = root, p = shared_ptr<Node>();
 
     while (tmp)
     {
@@ -219,7 +207,7 @@ void RBT<T, T1>::add(T key, T1 value)
         }
     }
 
-    tmp = new Node(key, value);
+    tmp = shared_ptr<Node>(new Node(key, value));
     tmp->parent = p;
 
     if (p)
@@ -236,13 +224,13 @@ void RBT<T, T1>::add(T key, T1 value)
 
     ////////////////////////////////////////
     if (root) root->parent = _end;
-    Node* nx = tmp->next();
-    Node* pr = tmp->prev();
+    shared_ptr<Node> nx = tmp->next().lock();
+    shared_ptr<Node> pr = tmp->prev().lock();
 
 
     tmp->listPrev = pr; pr->listNext = tmp;
     tmp->listNext = nx; nx->listPrev = tmp;
-    if (root) root->parent = nullptr;
+    if (root) root->parent = weak_ptr<Node>();
     ///////////////////////////////////////
 
     if (root) root->parent = _end;
@@ -254,8 +242,12 @@ void RBT<T, T1>::add(T key, T1 value)
 template<class T, class T1>
 void RBT<T, T1>::remove(T key)
 {
-    if (root) root->parent = nullptr;
-    Node* tmp = root ? root->find(key) : nullptr;
+    if (root) root->parent = weak_ptr<Node>();
+    shared_ptr<Node> tmp;
+    if (root)
+        tmp = root->find(key);
+    else 
+        tmp = shared_ptr<Node>();
 
     if (!tmp)
     {
@@ -265,15 +257,13 @@ void RBT<T, T1>::remove(T key)
 
     if (!tmp->parent && !tmp->left && !tmp->right)
     {
-        delete tmp;
-        tmp = nullptr;
-        if (root) root->parent = _end;
+        root = shared_ptr<Node>();
         return;
     }
 
     if (tmp->left && tmp->right)
     {
-        Node* removed = tmp->left;
+        shared_ptr<Node> removed = tmp->left;
         while (removed->right)
             removed = removed->right;
         tmp->data = removed->data;
@@ -285,7 +275,7 @@ void RBT<T, T1>::remove(T key)
         ////////////////////////////////////
     }
 
-    Node* child = tmp->left ? tmp->left : tmp->right;
+    shared_ptr<Node> child = tmp->left ? tmp->left : tmp->right;
 
     if (!child)
     {
@@ -322,23 +312,22 @@ void RBT<T, T1>::remove(T key)
     }
     ////////////////////////////////////
     if (root) root->parent = _end;
-    Node* nx = tmp->next();
-    Node* pr = tmp->prev();
+    shared_ptr<Node> nx = tmp->next().lock();
+    shared_ptr<Node> pr = tmp->prev().lock();
 
 
     tmp->listPrev = pr; pr->listNext = tmp;
     tmp->listNext = nx; nx->listPrev = tmp;
-    if (root) root->parent = nullptr;
+    if (root) root->parent = weak_ptr<Node>();
     /////////////////////////////////////
-    delete tmp;
 
-    if (root) root->parent = nullptr;
+    if (root) root->parent = _end;
 }
 
 template<class T, class T1>
 T1 RBT<T, T1>::findValueWithKey(T key)
 {
-    Node* tmp = root, * p = nullptr;
+    shared_ptr<Node> tmp = root,  p = shared_ptr<Node>();
 
     while (tmp)
     {
@@ -359,14 +348,14 @@ T1 RBT<T, T1>::findValueWithKey(T key)
 template<class T, class T1>
 bool RBT<T, T1>::contains(T key)
 {
-    return root != nullptr && root->find(key) != nullptr;
+    return root && root->find(key);
 }
 
 template<class T, class T1>
 RBT<T, T1>::Node::Node(T nKey, T1 nValue)
 {
-    left = right = parent = nullptr;
-    listNext = listPrev = nullptr;
+    left = right = parent = weak_ptr<Node>();
+    listNext = listPrev = weak_ptr<Node>();
     color = 0;
     key = nKey;
     data = nValue;
@@ -375,15 +364,15 @@ RBT<T, T1>::Node::Node(T nKey, T1 nValue)
 template<class T, class T1>
 RBT<T, T1>::Node::Node()
 {
-    left = right = parent = nullptr;
-    listNext = listPrev = nullptr;
+    left = right = parent = weak_ptr<Node>();
+    listNext = listPrev = weak_ptr<Node>();
     color = 0;
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::RotateLeft(Node*& root)
+void RBT<T, T1>::Node::RotateLeft(shared_ptr<Node>& root)
 {
-    Node* tmp = this->right;
+    shared_ptr<Node> tmp = this->right;
 
     tmp->parent = this->parent;
     if (this->parent)
@@ -394,7 +383,7 @@ void RBT<T, T1>::Node::RotateLeft(Node*& root)
             this->parent->right = tmp;
     }
     else
-        root = tmp;
+        root = tmp.lock();
 
     this->right = tmp->left;
     if (tmp->left)
@@ -405,7 +394,7 @@ void RBT<T, T1>::Node::RotateLeft(Node*& root)
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::RotateRight(Node*& root)
+void RBT<T, T1>::Node::RotateRight(shared_ptr<Node>& root)
 {
     Node* tmp = this->left;
 
@@ -429,7 +418,7 @@ void RBT<T, T1>::Node::RotateRight(Node*& root)
 }
 
 template<class T, class T1>
-typename RBT<T, T1>::Node* RBT<T, T1>::Node::grandparent()
+weak_ptr<typename RBT<T, T1>::Node > RBT<T, T1>::Node::grandparent()
 {
     if (parent && parent->parent)
         return parent->parent;
@@ -438,7 +427,7 @@ typename RBT<T, T1>::Node* RBT<T, T1>::Node::grandparent()
 }
 
 template<class T, class T1>
-typename RBT<T, T1>::Node* RBT<T, T1>::Node::uncle()
+weak_ptr<typename RBT<T, T1>::Node > RBT<T, T1>::Node::uncle()
 {
     Node* tmp = grandparent();
 
@@ -454,7 +443,7 @@ typename RBT<T, T1>::Node* RBT<T, T1>::Node::uncle()
 }
 
 template<class T, class T1>
-typename RBT<T, T1>::Node* RBT<T, T1>::Node::sibling()
+weak_ptr<typename RBT<T, T1>::Node > RBT<T, T1>::Node::sibling()
 {
     if (!parent) return nullptr;
 
@@ -465,7 +454,7 @@ typename RBT<T, T1>::Node* RBT<T, T1>::Node::sibling()
 }
 
 template<class T, class T1>
-typename RBT<T, T1>::Node* RBT<T, T1>::Node::find(T key)
+weak_ptr<typename RBT<T, T1>::Node > RBT<T, T1>::Node::find(T key)
 {
 
     Node* tmp = this;
@@ -480,7 +469,7 @@ typename RBT<T, T1>::Node* RBT<T, T1>::Node::find(T key)
 }
 
 template<class T, class T1>
-typename RBT<T, T1>::Node* RBT<T, T1>::Node::next()
+weak_ptr<typename RBT<T, T1>::Node > RBT<T, T1>::Node::next()
 {
     Node* tmp = right;
     if (tmp)
@@ -496,7 +485,7 @@ typename RBT<T, T1>::Node* RBT<T, T1>::Node::next()
 }
 
 template<class T, class T1>
-typename RBT<T, T1>::Node* RBT<T, T1>::Node::prev()
+weak_ptr<typename RBT<T, T1>::Node > RBT<T, T1>::Node::prev()
 {
     Node* tmp = left;
     if (tmp)
@@ -512,7 +501,7 @@ typename RBT<T, T1>::Node* RBT<T, T1>::Node::prev()
 }
 
 template<class T, class T1>
-typename RBT<T, T1>::Node* RBT<T, T1>::Node::min()
+weak_ptr<typename RBT<T, T1>::Node > RBT<T, T1>::Node::min()
 {
     Node* tmp = this;
     while (tmp->left) tmp = tmp->left;
@@ -520,7 +509,7 @@ typename RBT<T, T1>::Node* RBT<T, T1>::Node::min()
 }
 
 template<class T, class T1>
-typename RBT<T, T1>::Node* RBT<T, T1>::Node::max()
+weak_ptr<typename RBT<T, T1>::Node > RBT<T, T1>::Node::max()
 {
     Node* tmp = this;
     while (tmp->right) tmp = tmp->right;
@@ -528,7 +517,7 @@ typename RBT<T, T1>::Node* RBT<T, T1>::Node::max()
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::InsCase1(Node*& root)
+void RBT<T, T1>::Node::InsCase1(shared_ptr<Node>& root)
 {
     if (parent == nullptr)
         color = 1;
@@ -537,7 +526,7 @@ void RBT<T, T1>::Node::InsCase1(Node*& root)
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::InsCase2(Node*& root)
+void RBT<T, T1>::Node::InsCase2(shared_ptr<Node>& root)
 {
     if (parent->color)
         return;
@@ -545,7 +534,7 @@ void RBT<T, T1>::Node::InsCase2(Node*& root)
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::InsCase3(Node*& root)
+void RBT<T, T1>::Node::InsCase3(shared_ptr<Node>& root)
 {
     Node* u = uncle();
 
@@ -562,7 +551,7 @@ void RBT<T, T1>::Node::InsCase3(Node*& root)
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::InsCase4(Node*& root)
+void RBT<T, T1>::Node::InsCase4(shared_ptr<Node>& root)
 {
     Node* g = grandparent(), * tmp = this;
 
@@ -581,7 +570,7 @@ void RBT<T, T1>::Node::InsCase4(Node*& root)
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::InsCase5(Node*& root)
+void RBT<T, T1>::Node::InsCase5(shared_ptr<Node>& root)
 {
     Node* g = grandparent();
 
@@ -595,14 +584,14 @@ void RBT<T, T1>::Node::InsCase5(Node*& root)
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::DelCase1(Node*& root)
+void RBT<T, T1>::Node::DelCase1(shared_ptr<Node>& root)
 {
     if (parent)
         this->DelCase2(root);
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::DelCase2(Node*& root)
+void RBT<T, T1>::Node::DelCase2(shared_ptr<Node>& root)
 {
     Node* s = sibling();
 
@@ -623,7 +612,7 @@ void RBT<T, T1>::Node::DelCase2(Node*& root)
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::DelCase3(Node*& root)
+void RBT<T, T1>::Node::DelCase3(shared_ptr<Node>& root)
 {
     Node* s = sibling();
 
@@ -641,7 +630,7 @@ void RBT<T, T1>::Node::DelCase3(Node*& root)
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::DelCase4(Node*& root)
+void RBT<T, T1>::Node::DelCase4(shared_ptr<Node>& root)
 {
     Node* s = sibling();
 
@@ -659,7 +648,7 @@ void RBT<T, T1>::Node::DelCase4(Node*& root)
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::DelCase5(Node*& root)
+void RBT<T, T1>::Node::DelCase5(shared_ptr<Node>& root)
 {
     Node* s = sibling();
 
@@ -690,7 +679,7 @@ void RBT<T, T1>::Node::DelCase5(Node*& root)
 }
 
 template<class T, class T1>
-void RBT<T, T1>::Node::DelCase6(Node*& root)
+void RBT<T, T1>::Node::DelCase6(shared_ptr<Node>& root)
 {
     Node* s = sibling();
     s->color = parent->color;
@@ -709,7 +698,7 @@ void RBT<T, T1>::Node::DelCase6(Node*& root)
 }
 
 template<class T, class T1>
-RBT<T, T1>::iterator::iterator(Node* node, RBT<T, T1>* own)
+RBT<T, T1>::iterator::iterator(weak_ptr<Node> node, weak_ptr<RBT<T, T1> > own)
 {
     this->iter = node;
     owner = own;
@@ -755,7 +744,7 @@ typename RBT<T, T1>::iterator& RBT<T, T1>::iterator::operator--()
 }
 
 template<class T, class T1>
-RBT<T, T1>::iterator_l::iterator_l(Node* node, RBT<T, T1>* own)
+RBT<T, T1>::iterator_l::iterator_l(weak_ptr<Node> node, weak_ptr<RBT<T, T1> > own)
 {
     this->iter = node;
     owner = own;

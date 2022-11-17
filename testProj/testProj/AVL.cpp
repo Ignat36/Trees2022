@@ -189,7 +189,7 @@ AVL::Node* AVL::Node::newNode(ll nKey, str nValue)
     node->right = nullptr;
     node->height = 1; 
 
-    return(node);
+    return node;
 }
 
 int AVL::Node::getHeight(Node* node)

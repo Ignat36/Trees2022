@@ -2,9 +2,6 @@
 #include <string>
 #include <map>
 
-#include "unique_ptr.h"
-#include "shared_ptr.h"
-#include "weak_ptr.h"
 #include "AVL.h"
 #include "rbt.h"
 
@@ -32,9 +29,9 @@ void fill(RBT<int, std::string> &a, int n = 1000000, int mod = 1e5 + 7)
 	}
 }
 
-void testAVl(int tests_count = 10000000)
+void testAVl(int tests_count = 1000000)
 {
-	AVL avl; fill(avl, 10000000);
+	AVL avl; fill(avl);
 
 	for (int i = 0; i < tests_count; i++)
 	{
@@ -66,12 +63,12 @@ void testAVl(int tests_count = 10000000)
 	std::cout << "AVL tests complited\n";
 }
 
-void testRBT(int tests_count = 100000000)
+void testRBT(int tests_count = 1000000)
 {
 	
-	RBT<int, std::string> rbt; fill(rbt, 10000000);
+	RBT<int, std::string> rbt; fill(rbt);
 	
-	std::cout << "Testing started\n";
+	//std::cout << "Testing started\n";
 
 	for (int i = 0; i < tests_count; i++)
 	{
@@ -118,8 +115,7 @@ int main()
 	avl.keySortedPrint(); std::cout << "\n";
 	
 	// complited final
-	//testAVl(); 
-	
+	testAVl(); 
 	testRBT();
 	//rbt[2] = "2";
 	//rbt[1] = "1";
