@@ -1,5 +1,8 @@
 #pragma once
 
+#include "shared_ptr.h"
+#include "weak_ptr.h"
+
 #include <string>
 
 class AVL
@@ -27,26 +30,28 @@ private:
     public:
         Node(ll nKey, str nValue);
         Node();
-        Node* newNode(ll nKey, str nValue);
-        Node* left, * right;
+        shared_ptr<Node> newNode(ll nKey, str nValue);
+        shared_ptr<Node> left, right;
         int height;
         ll key;
         str data;
 
-        int getHeight(Node* node);
+        int getHeight(shared_ptr<Node> node);
         int max(int a, int b);
 
-        Node* rightRotate(Node* node);
-        Node* leftRotate(Node* node);
-        
+        shared_ptr<Node> rightRotate(shared_ptr<Node> node);
+        shared_ptr<Node> leftRotate(shared_ptr<Node> node);
 
-        int getBalance(Node* node);
-        Node* insert(Node* node, int key, str value);
-        Node* minValueNode(Node* node);
-        Node* deleteNode(Node* root, int key);
 
-        Node* find(Node *node, ll key);
-    } *root;
+        int getBalance(shared_ptr<Node> node);
+        shared_ptr<Node> insert(shared_ptr<Node> node, int key, str value);
+        shared_ptr<Node> minValueNode(shared_ptr<Node> node);
+        shared_ptr<Node> deleteNode(shared_ptr<Node> root, int key);
+
+        shared_ptr<Node> find(shared_ptr<Node> node, ll key);
+    };
+
+    shared_ptr<Node> root;
 };
 
 

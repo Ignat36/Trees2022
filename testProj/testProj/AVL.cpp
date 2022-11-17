@@ -4,38 +4,22 @@
 
 AVL::AVL()
 {
-    root = nullptr;
+    root = shared_ptr<Node>();
 }
 
 void AVL::clear()
 {
-    std::vector< Node* > stack;
-
-    stack.push_back(root);
-
-    while (!stack.empty())
-    {
-        Node* tmp = stack.back();
-        stack.pop_back();
-
-        if (!tmp) continue;
-        stack.push_back(tmp->left);
-        stack.push_back(tmp->right);
-
-        delete tmp;
-    }
-
-    root = nullptr;
+    root = shared_ptr<Node>();
 }
 
 void AVL::directPrint()
 {
-    std::vector< Node* > stack;
+    std::vector< shared_ptr<Node> > stack;
     stack.push_back(root);
 
     while (!stack.empty())
     {
-        Node* tmp = stack.back();
+        shared_ptr<Node> tmp = stack.back();
         stack.pop_back();
 
         if (!tmp) continue;
@@ -49,12 +33,12 @@ void AVL::directPrint()
 
 void AVL::reversePrint()
 {
-    std::vector< std::pair<Node*, std::pair<bool, bool> > > stack;
+    std::vector< std::pair< shared_ptr<Node>&, std::pair<bool, bool> > > stack;
     stack.push_back({ root, {false, false} });
 
     while (!stack.empty())
     {
-        std::pair<Node*, std::pair<bool, bool> > tmp = stack.back();
+        std::pair<shared_ptr<Node>&, std::pair<bool, bool> > tmp = stack.back();
 
         if (!tmp.first)
         {
@@ -83,14 +67,14 @@ void AVL::reversePrint()
 
 void AVL::keySortedPrint()
 {
-    std::vector< std::pair<Node*, bool> > stack;
+    std::vector< std::pair< shared_ptr<Node>&, bool> > stack;
     stack.push_back({ root, false });
 
     int k = 0;
 
     while (!stack.empty())
     {
-        std::pair<Node*, bool> tmp = stack.back();
+        std::pair<shared_ptr<Node>&, bool> tmp = stack.back();
 
         if (!tmp.first)
         {
@@ -115,14 +99,13 @@ void AVL::keySortedPrint()
 
 AVL::~AVL()
 {
-    clear();
 }
 
 //
 std::string& AVL::operator[](ll key)
 {
 
-    if (root == nullptr || root->find(root, key) == nullptr)
+    if (!root || !root->find(root, key))
         add(key, "");
 
     return root->find(root, key)->data;
@@ -131,9 +114,9 @@ std::string& AVL::operator[](ll key)
 
 void AVL::add(ll key, str value)
 {
-    if (root == nullptr) {
+    if (!root) {
 
-        root = new Node(key, value);
+        root = shared_ptr<Node>(new Node(key, value));
 
         return;
     }
@@ -143,7 +126,7 @@ void AVL::add(ll key, str value)
 
 void AVL::remove(ll key)
 {
-    if (root == nullptr)
+    if (!root)
         return;
 
     root = root->deleteNode(root, key);
@@ -151,7 +134,7 @@ void AVL::remove(ll key)
 
 std::string AVL::findValueWithKey(ll key)
 {
-    if (root == nullptr || root->find(root, key) == nullptr)
+    if (!root || !root->find(root, key))
         throw std::exception();
 
     return root->find(root, key)->data;
@@ -159,12 +142,12 @@ std::string AVL::findValueWithKey(ll key)
 
 bool AVL::contains(ll key)
 {
-    return root != nullptr && root->find(root, key) != nullptr;
+    return root && root->find(root, key);
 }
 
 AVL::Node::Node(ll nKey, str nValue)
 {
-    left = right = nullptr;
+    left = right = shared_ptr<Node>();
     data = nValue;
     key = nKey;
     height = 1;
@@ -172,7 +155,7 @@ AVL::Node::Node(ll nKey, str nValue)
 
 AVL::Node::Node()
 {
-    left = right = nullptr;
+    left = right = shared_ptr<Node>();
     data = "";
     key = 0;
     height = 1;
@@ -180,21 +163,21 @@ AVL::Node::Node()
 
 
 //Create new node and return it.
-AVL::Node* AVL::Node::newNode(ll nKey, str nValue)
+shared_ptr<AVL::Node> AVL::Node::newNode(ll nKey, str nValue)
 {
     Node* node = new Node();
     node->key = nKey;
     node->data = nValue;
-    node->left = nullptr;
-    node->right = nullptr;
+    node->left = shared_ptr<Node>();
+    node->right = shared_ptr<Node>();
     node->height = 1; 
 
-    return(node);
+    return shared_ptr<Node>(node);
 }
 
-int AVL::Node::getHeight(Node* node)
+int AVL::Node::getHeight(shared_ptr<Node> node)
 {
-    if (node == NULL)
+    if (!node)
         return 0;
     return node->height;
 }
@@ -204,10 +187,10 @@ int AVL::Node::max(int a, int b)
     return (a > b) ? a : b;
 }
 
-AVL::Node* AVL::Node::rightRotate(Node* node)
+shared_ptr<AVL::Node> AVL::Node::rightRotate(shared_ptr<Node> node)
 {
-    Node* x = node->left;
-    Node* T2 = x->right;
+    shared_ptr<Node> x = node->left;
+    shared_ptr<Node> T2 = x->right;
 
     // Perform rotation 
     x->right = node;
@@ -223,10 +206,10 @@ AVL::Node* AVL::Node::rightRotate(Node* node)
     return x;
 }
 
-AVL::Node* AVL::Node::leftRotate(Node* node)
+shared_ptr<AVL::Node> AVL::Node::leftRotate(shared_ptr<Node> node)
 {
-    Node* y = node->right;
-    Node* T2 = y->left;
+    shared_ptr<Node> y = node->right;
+    shared_ptr<Node> T2 = y->left;
 
     // Perform rotation 
     y->left = node;
@@ -242,18 +225,18 @@ AVL::Node* AVL::Node::leftRotate(Node* node)
     return y;
 }
 
-int AVL::Node::getBalance(Node* node)
+int AVL::Node::getBalance(shared_ptr<Node> node)
 {
-    if (node == NULL)
+    if (!node)
         return 0;
     return getHeight(node->left) -
         getHeight(node->right);
 }
 
-AVL::Node* AVL::Node::insert(Node* node, int key, str value)
+shared_ptr<AVL::Node> AVL::Node::insert(shared_ptr<Node> node, int key, str value)
 {
     /* 1. Perform the normal BST rotation */
-    if (node == NULL)
+    if (!node)
         return(newNode(key, value));
 
     if (key < node->key)
@@ -301,21 +284,21 @@ AVL::Node* AVL::Node::insert(Node* node, int key, str value)
     return node;
 }
 
-AVL::Node* AVL::Node::minValueNode(Node* node)
+shared_ptr<AVL::Node> AVL::Node::minValueNode(shared_ptr<Node> node)
 {
-    Node* current = node;
+    shared_ptr<Node> current = node;
 
     /* loop down to find the leftmost leaf */
-    while (current->left != nullptr)
+    while (current->left)
         current = current->left;
 
     return current;
 }
 
-AVL::Node* AVL::Node::deleteNode(Node* root, int key)
+shared_ptr<AVL::Node> AVL::Node::deleteNode(shared_ptr<Node> root, int key)
 {
     // STEP 1: PERFORM STANDARD BST DELETE 
-    if (root == NULL)
+    if (!root)
         return root;
 
     // If the key to be deleted is smaller 
@@ -335,29 +318,28 @@ AVL::Node* AVL::Node::deleteNode(Node* root, int key)
     else
     {
         // node with only one child or no child 
-        if ((root->left == NULL) ||
-            (root->right == NULL))
+        if ((!root->left) ||
+            (!root->right))
         {
-            Node* temp = root->left ?
+            shared_ptr<Node> temp = root->left ?
                 root->left :
                 root->right;
 
             // No child case 
-            if (temp == NULL)
+            if (!temp)
             {
                 temp = root;
-                root = NULL;
+                root = shared_ptr<Node>();
             }
             else // One child case 
                 *root = *temp; // Copy the contents of 
             // the non-empty child 
-            free(temp);
         }
         else
         {
             // node with two children: Get the inorder 
             // successor (smallest in the right subtree) 
-            Node* temp = minValueNode(root->right);
+            shared_ptr<Node> temp = minValueNode(root->right);
 
             // Copy the inorder successor's 
             // data to this node 
@@ -371,7 +353,7 @@ AVL::Node* AVL::Node::deleteNode(Node* root, int key)
 
     // If the tree had only one node
     // then return 
-    if (root == NULL)
+    if (!root)
         return root;
 
     // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE 
@@ -415,10 +397,10 @@ AVL::Node* AVL::Node::deleteNode(Node* root, int key)
     return root;
 }
 
-AVL::Node* AVL::Node::find(Node *node, ll key)
+shared_ptr<AVL::Node> AVL::Node::find(shared_ptr<Node> node, ll key)
 {
     if (!node)
-        return nullptr;
+        return shared_ptr<Node>();
 
     if (node->key > key)
         return find(node->left, key);

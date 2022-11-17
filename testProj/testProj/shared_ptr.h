@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 template<class T>
 class weak_ptr;
 
@@ -16,6 +18,10 @@ private:
 	{
 		if (!m_references_count || --(*m_references_count) == 0)
 		{
+
+			if (m_ptr)
+				std::cout << "Deleted ptr\n";
+
 			delete m_ptr;
 			delete m_references_count;
 		}
@@ -41,6 +47,13 @@ public:
 
 	// Конструктор перемещения, который передает право собственности на x.m_ptr в m_ptr
 	shared_ptr(shared_ptr& x)
+		: m_ptr(x.m_ptr), m_references_count(x.m_references_count)
+	{
+		(* m_references_count)++;
+	}
+
+	// Конструктор перемещения, который передает право собственности на x.m_ptr в m_ptr
+	shared_ptr(const shared_ptr& x)
 		: m_ptr(x.m_ptr), m_references_count(x.m_references_count)
 	{
 		(* m_references_count)++;

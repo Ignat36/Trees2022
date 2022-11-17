@@ -32,14 +32,14 @@ void fill(RBT<int, std::string> &a, int n = 1000000, int mod = 1e5 + 7)
 	}
 }
 
-void testAVl(int tests_count = 10000000)
+void testAVl(int tests_count = 1000000)
 {
-	AVL avl; fill(avl, 10000000);
+	AVL avl; fill(avl, 0);
 
 	for (int i = 0; i < tests_count; i++)
 	{
 		int id = rand() % 3;
-		int ran = rand() * rand() % (int)(1e9 + 7);
+		int ran = rand() * rand() % 100;
 
 
 		if (id == 0) // insert
@@ -62,14 +62,17 @@ void testAVl(int tests_count = 10000000)
 				return;
 			}
 		}
+
+		std::cout << "Test : " << i << ". Action : " << id << "\n";
+
 	}
 	std::cout << "AVL tests complited\n";
 }
 
-void testRBT(int tests_count = 100000000)
+void testRBT(int tests_count = 1000000)
 {
 	
-	RBT<int, std::string> rbt; fill(rbt, 10000000);
+	RBT<int, std::string> rbt; fill(rbt);
 	
 	std::cout << "Testing started\n";
 
@@ -110,7 +113,7 @@ void testRBT(int tests_count = 100000000)
 int main()
 {
 	AVL avl;
-	RBT<int, std::string> rbt;
+	
 	fill(avl, 50, 20); 
 
 	avl.directPrint(); std::cout << "\n";
@@ -118,15 +121,16 @@ int main()
 	avl.keySortedPrint(); std::cout << "\n";
 	
 	// complited final
-	//testAVl(); 
-	
-	testRBT();
+	testAVl(10000); 
+	//testRBT();
+
 	//rbt[2] = "2";
 	//rbt[1] = "1";
 	//rbt[4] = "4";
 	//rbt[3] = "3";
 	//
 
+	//RBT<int, std::string> rbt;
 	//rbt.remove(1);
 	//rbt.remove(3);
 	//rbt.remove(5);
