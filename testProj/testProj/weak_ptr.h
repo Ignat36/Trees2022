@@ -64,6 +64,24 @@ public:
 		return *this;
 	}
 
+	weak_ptr& operator=(const shared_ptr<T>& x)
+	{
+
+		// Передаем право собственности на x.m_ptr в m_ptr
+		m_ptr = x.m_ptr;
+		m_references_count = x.m_references_count;
+
+		return *this;
+	}
+
+	bool equals(weak_ptr ptr) {
+		return m_ptr == ptr.m_ptr;
+	}
+
+	bool equals(weak_ptr const ptr) const {
+		return m_ptr == ptr.m_ptr;
+	}
+
 	shared_ptr<T> lock()
 	{
 		return shared_ptr<T>(*this);

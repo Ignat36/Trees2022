@@ -120,6 +120,14 @@ public:
 		return *this;
 	}
 
+	bool equals(shared_ptr ptr) {
+		return m_ptr == ptr.m_ptr;
+	}
+
+	bool equals(shared_ptr const ptr) const {
+		return m_ptr == ptr.m_ptr;
+	}
+
 	T& operator*() const { return *m_ptr; }
 	T* operator->() const { return m_ptr; }
 };
