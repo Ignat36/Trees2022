@@ -19,8 +19,8 @@ private:
 		if (!m_references_count || --(*m_references_count) == 0)
 		{
 
-			if (m_ptr)
-				std::cout << "Deleted ptr\n";
+			//if (m_ptr)
+			//	std::cout << "Deleted ptr\n";
 
 			delete m_ptr;
 			delete m_references_count;

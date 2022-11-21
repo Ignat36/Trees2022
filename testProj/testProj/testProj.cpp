@@ -1,6 +1,9 @@
 ﻿#include <iostream>
 #include <string>
 #include <map>
+#include <memory>
+
+#include "shared_ptr.h"
 
 #include "unique_ptr.h"
 #include "shared_ptr.h"
@@ -34,7 +37,7 @@ void fill(RBT<int, std::string> &a, int n = 1000000, int mod = 1e5 + 7)
 
 void testAVl(int tests_count = 1000000)
 {
-	AVL avl; fill(avl, 0);
+	AVL avl; fill(avl, 100, 100);
 
 	for (int i = 0; i < tests_count; i++)
 	{
@@ -63,7 +66,7 @@ void testAVl(int tests_count = 1000000)
 			}
 		}
 
-		std::cout << "Test : " << i << ". Action : " << id << "\n";
+		//std::cout << "Test : " << i << ". Action : " << id << "\n";
 
 	}
 	std::cout << "AVL tests complited\n";
@@ -81,7 +84,7 @@ void testRBT(int tests_count = 1000000)
 		int id = rand() % 5;
 		int ran = rand() * rand() % 100;
 
-		std::cout << "Test : " << i << ". Action : " << id << " VAL : " << ran << "\n";
+		//std::cout << "Test : " << i << ". Action : " << id << " VAL : " << ran << "\n";
 
 		if (id == 0) // insert
 		{
@@ -110,18 +113,18 @@ void testRBT(int tests_count = 1000000)
 
 		if (id == 3) // iter
 		{
-			for (auto j = rbt.begin(); j != rbt.end(); ++j)
-				std::cout << *j;
+			for (auto j = rbt.begin(); j != rbt.end(); ++j) {}
+				//std::cout << *j;
 
-			printf("\n");
+			//printf("\n");
 		}
 
 		if (id == 4) // list iter
 		{
-			for (auto j = rbt.begin_l(); j != rbt.end_l(); ++j)
-				std::cout << *j;
+			for (auto j = rbt.begin_l(); j != rbt.end_l(); ++j) {}
+				//std::cout << *j;
 
-			printf("\n");
+			//printf("\n");
 		}
 
 		
@@ -135,87 +138,33 @@ std::map<int, int> mp;
 
 void print_dict()
 {
-	for (auto i = dict.begin(); i != dict.end(); ++i)
-		printf_s("%s ", (*i).c_str());
+	for (auto i = dict.begin(); i != dict.end(); ++i) {}
+		//printf_s("%s ", (*i).c_str());
 
-	printf("\n");
+	//printf("\n");
 }
 
 void print_dict_l()
 {
-	for (auto i = dict.begin_l(); i != dict.end_l(); ++i)
-		printf_s("%s ", (*i).c_str());
+	for (auto i = dict.begin_l(); i != dict.end_l(); ++i) {}
+		//printf_s("%s ", (*i).c_str());
 
-	printf("\n");
+	//printf("\n");
 }
 
 int main()
 {
-	/*for (int i = 0; i < 10000; i++) {
-		int action_id;
-		std::string name, phone_number;
-		char buf[100];
-
-		printf_s("%s", "Enter action number : \n1. Add new contact\n2.Find number by name\nAction number : ");
-
-		scanf_s("%d", &action_id, 1);
-
-		std::string num;
-
-		switch (action_id)
-		{
-		case 1:
-			printf_s("%s", "Enter name : ");
-
-			scanf_s("%s", buf, sizeof(buf));
-			name = std::string(buf);
-
-			printf_s("%s", "Enter phone number : ");
-			scanf_s("%s", buf, sizeof(buf));
-			phone_number = std::string(buf);
-
-			dict[name] = phone_number;
-
-			break;
-
-		case 2:
-			printf_s("%s", "Enter name : ");
-			scanf_s("%s", buf, sizeof(buf));
-			name = std::string(buf);
-
-			try {
-				num = dict.findValueWithKey(name);
-				printf_s("Number : %s\n", num.c_str());
-			}
-			catch (...) {
-				printf_s("%s", "Record with such name is not found\n");
-			}
-			break;
-
-		case 3:
-			print_dict();
-			break;
-
-		case 4:
-			print_dict_l();
-			break;
-
-		default:
-			break;
-		}
-	}*/
-
-
-	/*AVL avl;
+	AVL avl;
 
 	fill(avl, 50, 20);
 
 	avl.directPrint(); std::cout << "\n";
 	avl.reversePrint(); std::cout << "\n";
-	avl.keySortedPrint(); std::cout << "\n";*/
+	avl.keySortedPrint(); std::cout << "\n";
 
 	// complited final
-	//testAVl(10000); 
+	testAVl(); 
 	testRBT();
 	return 0;
 }
+
