@@ -22,9 +22,9 @@ protected:
         Node(T nKey, T1 nValue);
         Node();
         shared_ptr<Node> left, right;
-        weak_ptr<Node> parent;
+        weak_ptr<Node> parent; // weak_ptr во избежания циклических ссылок
         weak_ptr<Node> listNext, listPrev;
-        bool color;
+        bool color; // red - false, black - true
         T key;
         T1 data;
     };
@@ -125,21 +125,23 @@ RBT<T, T1>::RBT()
 template<class T, class T1>
 void RBT<T, T1>::clear()
 {
+    // Обрубаем связь со всеми нодами, тем самым они выходят из области видимости, а после вызываются деструкторы умнах указателей
     root = shared_ptr<Node>();
 }
 
 template<class T, class T1>
 RBT<T, T1>::~RBT()
 {
+    // Память сама почиститься
 }
 
 template<class T, class T1>
 T1& RBT<T, T1>::operator[](T key)
 {
-    if (root) root->parent = shared_ptr<Node>();
+    if (root) root->parent = shared_ptr<Node>(); // отсоединяем фантомный узел
     shared_ptr<Node> tmp = root, p = shared_ptr<Node>();
 
-    while (tmp && tmp->key != key)
+    while (tmp && tmp->key != key) // ищем узел с заданным ключем
     {
         p = tmp;
         if (tmp->key > key)
@@ -148,7 +150,7 @@ T1& RBT<T, T1>::operator[](T key)
             tmp = tmp->right;
     }
 
-    if (!tmp)
+    if (!tmp) // Если такого узла нет, то добавляем его
     {
         tmp = shared_ptr<Node>(new Node());
         tmp->key = key;
@@ -180,17 +182,17 @@ T1& RBT<T, T1>::operator[](T key)
         
     }
 
-    if (root) root->parent = _end;
-    return tmp->data;
+    if (root) root->parent = _end; // Присоединяем фаантомный узел
+    return tmp->data; // По ссылке возвращаем хранящееся значение
 }
 
 template<class T, class T1>
 void RBT<T, T1>::add(T key, T1 value)
 {
-    if (root) root->parent = shared_ptr<Node>();
+    if (root) root->parent = shared_ptr<Node>(); // Отсоединяем фантомный узел
     shared_ptr<Node> tmp = root, p = shared_ptr<Node>();
 
-    while (tmp)
+    while (tmp) // Спускаемся по дереву, ищя, куда вставить новый узел
     {
         p = tmp;
 
@@ -199,7 +201,7 @@ void RBT<T, T1>::add(T key, T1 value)
         else if (tmp->key < key)
             tmp = tmp->right;
         else
-        {
+        { // Если такой узел уже есть, то прото выходим
             if (root) root->parent = _end;
             return;
         }
@@ -231,7 +233,7 @@ void RBT<T, T1>::add(T key, T1 value)
     if (root) root->parent = shared_ptr<Node>();
     ///////////////////////////////////////
 
-    if (root) root->parent = _end;
+    if (root) root->parent = _end; // Присоединяем фантомный узел
     return;
 }
 
@@ -241,33 +243,33 @@ template<class T, class T1>
 void RBT<T, T1>::remove(T key)
 {
     if (root) root->parent = shared_ptr<Node>();
-    shared_ptr<Node> tmp = root ? find(root, key) : shared_ptr<Node>();
+    shared_ptr<Node> tmp = root ? find(root, key) : shared_ptr<Node>(); // Ищем узел с нужным ключем
 
-    if (!tmp)
+    if (!tmp) // Повезло повезло, ниче делать не надо если такого узла нет
     {
         if (root) root->parent = _end;
         return;
     }
 
-    if (!tmp->parent && !tmp->left && !tmp->right)
+    if (!tmp->parent && !tmp->left && !tmp->right) // Случай, когда дерево состоит из одного узла
     {
-        root = shared_ptr<Node>();
+        root = shared_ptr<Node>(); // Обнуляем корень
         if (root) root->parent = _end;
         return;
     }
 
-    if (tmp->left && tmp->right)
+    if (tmp->left && tmp->right) // Если у узла есть и левй и правый потомок
     {
+        // Ищем самый правый узел в левом поддереве
+        // Этот узел будет ближайшим меньшим к удаляемому, по значнию ключа
+        // Что дает нам возможность переместить его значение в удаляемый узел, и удалять уже новый, но у которого будет либо один, либо ноль потомков
+        // При таком способе прийдется рассматривать намного меньшее количество вариантов
         shared_ptr<Node> removed = tmp->left;
         while (removed->right)
             removed = removed->right;
         tmp->data = removed->data;
         tmp->key = removed->key;
         tmp = removed;
-
-        ////////////////////////////////////
-        // swap instead of copy
-        ////////////////////////////////////
     }
 
     ////////////////////////////////////
@@ -281,26 +283,26 @@ void RBT<T, T1>::remove(T key)
     if (root) root->parent = shared_ptr<Node>();
     /////////////////////////////////////
 
-    shared_ptr<Node> child = tmp->left ? tmp->left : tmp->right;
+    shared_ptr<Node> child = tmp->left ? tmp->left : tmp->right; // Ищем потомка, если таково имеется
 
-    if (!child)
+    if (!child) // Случай, когда потомков нет
     {
-        if (tmp->color)
-            DelCase1(tmp);
+        if (tmp->color) // Удаление красного узла не привело бы к разбалансировке дерева
+            DelCase1(tmp); // А вот удаление черного узла нарушает свойства красно-черного дерева об одинаковой длинне черных путей
 
         shared_ptr<Node> p = tmp->parent;
 
-        if (p->left.equals(tmp))
+        if (p->left.equals(tmp)) // Меняем связи, тем самым удаляя узел, после чего тот выйдет из области видимости
             p->left = child;
         else
             p->right = child;
     }
-    else
+    else // Случай, коогда потомок есть
     {
-        child->parent = tmp->parent;
+        child->parent = tmp->parent; // Меняем связи
         shared_ptr<Node> p = tmp->parent;
 
-        if (tmp->parent)
+        if (tmp->parent) // Меняем связи
         {
             if (tmp.equals(p->left))
                 p->left = child;
@@ -308,11 +310,11 @@ void RBT<T, T1>::remove(T key)
                 p->right = child;
         }
         else
-            root = child;
+            root = child; // Если надо, меняем корень дерева
 
-        if (tmp->color)
+        if (tmp->color) // Если удаляемы узел был красным, то никакие свойства не нарушаются
         {
-            if (!child->color)
+            if (!child->color) // Если удаляемый узел был черным, а потомок красный, то можем сохранить свойстав дерева, перекрасив потомка в черныйё
                 child->color = 1;
             else
                 DelCase1(child);
@@ -323,7 +325,7 @@ void RBT<T, T1>::remove(T key)
 }
 
 template<class T, class T1>
-T1 RBT<T, T1>::findValueWithKey(T key)
+T1 RBT<T, T1>::findValueWithKey(T key) // Функция поиска, думаю тут ничего особенного нет.
 {
     shared_ptr<Node> tmp = root, p = shared_ptr<Node>();
 
