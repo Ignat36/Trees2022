@@ -424,7 +424,7 @@ void RBT<T, T1>::RotateRight(shared_ptr<Node> node)
 template<class T, class T1>
 shared_ptr<typename RBT<T, T1>::Node> RBT<T, T1>::grandparent(shared_ptr<Node> node)
 {
-    shared_ptr<Node> p = node->parent;
+    shared_ptr<Node> p = node->parent; // Это присваивание делается для того, что бы не вызывать постоянно weak_ptr<T>::lock(), для конвертации в shared_ptr
     if (p && p->parent)
         return p->parent;
     else
